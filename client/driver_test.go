@@ -198,8 +198,11 @@ func TestOpen(t *testing.T) {
 		So(err, ShouldNotBeNil)
 
 		// not initialized(will run defaultInit once)
-		_, err = cqlDriver.Open("covenantsql://db")
-		So(err, ShouldNotBeNil)
+		homePath := utils.HomeDirExpand("~/.cql")
+		if !utils.Exist(homePath) {
+			_, err = cqlDriver.Open("covenantsql://db")
+			So(err, ShouldNotBeNil)
+		}
 
 		// reset driver not initialized
 		atomic.StoreUint32(&driverInitialized, 0)
